@@ -164,7 +164,7 @@ export function TravelProvider({ children }: { children: ReactNode }) {
       };
       const jsonStr = JSON.stringify(payload);
       const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
-      const url = new URL('/album', window.location.origin);
+      const url = new URL(window.location.href);
       url.searchParams.set('share', encoded);
       return url.toString();
     } catch {
