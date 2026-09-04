@@ -2,25 +2,59 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
+  --seed-orange: #FF7E36;
+  --seed-gray-100: #F2F3F6;
+  --seed-gray-200: #EAEAEC;
+  --seed-gray-300: #DCDEE3;
+  --seed-gray-400: #C1C5CC;
+  --seed-gray-500: #A0A5AF;
+  --seed-gray-600: #858A94;
+  --seed-gray-700: #6B7079;
+  --seed-gray-800: #4D5159;
+  --seed-gray-900: #212124;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-seed: var(--seed-orange);
+  --color-seed-gray-100: var(--seed-gray-100);
+  --color-seed-gray-200: var(--seed-gray-200);
+  --color-seed-gray-300: var(--seed-gray-300);
+  --color-seed-gray-400: var(--seed-gray-400);
+  --color-seed-gray-500: var(--seed-gray-500);
+  --color-seed-gray-600: var(--seed-gray-600);
+  --color-seed-gray-700: var(--seed-gray-700);
+  --color-seed-gray-800: var(--seed-gray-800);
+  --color-seed-gray-900: var(--seed-gray-900);
 }
 
 body {
-  background: var(--background);
+  background: #f5f5f5; /* Light gray background for desktop */
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--background);
+  position: relative;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
