@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { TravelMoment } from '@/types/record';
 import { useTravelContext } from '@/context/TravelContext';
 import { compressImage } from '@/utils/imageCompressor';
+import ImagePresetModal from '@/components/common/ImagePresetModal';
 
 const MOOD_EMOJIS = ['✨', '😋', '☕', '📸', '🌿', '🏖️', '🌆', '❤️', '😴', '🎉', '🏛️'];
 
@@ -15,6 +16,7 @@ export default function RecordDashboard() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
 
   // Form state
   const [text, setText] = useState('');
@@ -355,7 +357,7 @@ export default function RecordDashboard() {
               </div>
 
               <div className="flex justify-between items-center pt-2">
-                <div>
+                <div className="flex items-center gap-2">
                   <input 
                     type="file" 
                     multiple 
@@ -365,8 +367,19 @@ export default function RecordDashboard() {
                     className="hidden" 
                   />
                   <button 
+                    type="button"
+                    onClick={() => setIsPresetModalOpen(true)}
+                    className="px-3.5 py-2.5 rounded-full bg-orange-50 hover:bg-orange-100 border border-orange-200/80 flex items-center gap-1.5 text-xs font-semibold text-[var(--seed-orange)] transition-colors cursor-pointer"
+                    aria-label="기본 템플릿"
+                  >
+                    <span>🎨</span>
+                    <span>기본 템플릿</span>
+                  </button>
+                  <button 
+                    type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3.5 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center gap-1.5 text-xs font-semibold text-gray-700 transition-colors"
+                    className="px-3.5 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center gap-1.5 text-xs font-semibold text-gray-700 transition-colors cursor-pointer"
+                    aria-label="사진 추가"
                   >
                     <span>📷</span>
                     <span>사진 추가</span>
@@ -375,7 +388,7 @@ export default function RecordDashboard() {
                 
                 <button 
                   onClick={handleSaveMoment}
-                  className="px-6 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm rounded-full transition-colors"
+                  className="px-6 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm rounded-full transition-colors cursor-pointer"
                 >
                   {editingId ? '수정 완료' : '순간 저장'}
                 </button>
@@ -384,6 +397,21 @@ export default function RecordDashboard() {
           </div>
         </div>
       )}
+
+      {/* Preset Image Gallery Modal */}
+      <ImagePresetModal
+        isOpen={isPresetModalOpen}
+        onClose={() => setIsPresetModalOpen(false)}
+        onSelect={(selectedUrls) => {
+          setImages(prev => [...prev, ...selectedUrls]);
+          if (errorMsg) setErrorMsg('');
+        }}
+        mode="multiple"
+        initialSelected={images}
+        title="순간 기록 이미지 템플릿"
+        description="순간에 추가할 감성적인 여행 사진을 선택해보세요 (여러 장 선택 가능)."
+        onUploadClick={() => fileInputRef.current?.click()}
+      />
     </div>
   );
 }

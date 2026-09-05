@@ -7,12 +7,14 @@ import CityMagazine from './CityMagazine';
 import EmotionDiary from './EmotionDiary';
 import { useTravelContext, TemplateType } from '@/context/TravelContext';
 import { compressImage } from '@/utils/imageCompressor';
+import ImagePresetModal from '@/components/common/ImagePresetModal';
 
 export default function CoverEditor() {
   const router = useRouter();
   const { cover, template, setCover, setTemplate, resetToDefault, demoAlbums, loadDemoAlbum } = useTravelContext();
   const [isEditing, setIsEditing] = useState(false);
   const [isSheetCollapsed, setIsSheetCollapsed] = useState(false);
+  const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -176,17 +178,26 @@ export default function CoverEditor() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               <button 
                 onClick={() => setIsEditing(true)}
-                className="w-full py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl text-sm transition-colors"
+                className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl text-xs sm:text-sm transition-colors cursor-pointer"
                 aria-label="상세 편집"
               >
                 상세 편집
               </button>
               <button 
+                type="button"
+                onClick={() => setIsPresetModalOpen(true)}
+                className="w-full py-3 bg-orange-50 hover:bg-orange-100 text-[var(--seed-orange)] border border-orange-200/80 font-semibold rounded-xl text-xs sm:text-sm transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                aria-label="기본 템플릿"
+              >
+                <span>🎨</span>
+                <span>기본 템플릿</span>
+              </button>
+              <button 
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full py-3.5 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl text-sm transition-colors"
+                className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl text-xs sm:text-sm transition-colors cursor-pointer"
               >
                 사진 변경
               </button>
@@ -211,6 +222,29 @@ export default function CoverEditor() {
             </div>
             
             <div className="space-y-4 max-h-[50vh] overflow-y-auto no-scrollbar pb-10 px-1">
+              {/* Photo Change Controls in Drawer */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1.5">표지 사진</label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsPresetModalOpen(true)}
+                    className="flex-1 py-2.5 bg-orange-50 hover:bg-orange-100 text-[var(--seed-orange)] border border-orange-200 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>🎨</span>
+                    <span>기본 템플릿 갤러리</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>📁</span>
+                    <span>내 사진 업로드</span>
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-gray-500 mb-1">여행 제목</label>
                 <input 
@@ -274,6 +308,22 @@ export default function CoverEditor() {
           </div>
         )}
       </div>
+
+      {/* Preset Image Gallery Modal */}
+      <ImagePresetModal
+        isOpen={isPresetModalOpen}
+        onClose={() => setIsPresetModalOpen(false)}
+        onSelect={(urls) => {
+          if (urls.length > 0) {
+            setCover(prev => ({ ...prev, imageUrl: urls[0] }));
+          }
+        }}
+        mode="single"
+        initialSelected={cover.imageUrl ? [cover.imageUrl] : []}
+        title="표지 기본 이미지 템플릿"
+        description="앨범 표지에 어울리는 여행 사진 템플릿을 선택해보세요."
+        onUploadClick={() => fileInputRef.current?.click()}
+      />
     </div>
   );
 }
