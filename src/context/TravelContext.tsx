@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { CoverData } from '@/types/cover';
 import { TravelMoment } from '@/types/record';
 import { AlbumPageData } from '@/types/album';
+import { DEMO_ALBUMS, DemoAlbum } from '@/data/demoAlbums';
 
 export type TemplateType = 'minimal' | 'magazine' | 'diary';
 
@@ -44,6 +45,7 @@ interface TravelContextType {
   cover: CoverData;
   template: TemplateType;
   moments: TravelMoment[];
+  demoAlbums: DemoAlbum[];
   setCover: React.Dispatch<React.SetStateAction<CoverData>>;
   setTemplate: (t: TemplateType) => void;
   addMoment: (moment: Omit<TravelMoment, 'id'>) => void;
@@ -52,6 +54,7 @@ interface TravelContextType {
   generateAlbumPages: () => AlbumPageData[];
   createShareUrl: () => string;
   resetToDefault: () => void;
+  loadDemoAlbum: (demoId: 'jeju' | 'europe' | 'danang') => void;
 }
 
 const TravelContext = createContext<TravelContextType | undefined>(undefined);
@@ -143,6 +146,14 @@ export function TravelProvider({ children }: { children: ReactNode }) {
 
   const deleteMoment = (id: string) => {
     setMoments(prev => prev.filter(m => m.id !== id));
+  };
+
+  const loadDemoAlbum = (demoId: 'jeju' | 'europe' | 'danang') => {
+    const found = DEMO_ALBUMS.find(d => d.id === demoId);
+    if (!found) return;
+    setTemplate(found.template);
+    setCover(found.cover);
+    setMoments(found.moments);
   };
 
   const resetToDefault = () => {
@@ -274,7 +285,9 @@ export function TravelProvider({ children }: { children: ReactNode }) {
         deleteMoment,
         generateAlbumPages,
         createShareUrl,
-        resetToDefault
+        resetToDefault,
+        demoAlbums: DEMO_ALBUMS,
+        loadDemoAlbum
       }}
     >
       {children}

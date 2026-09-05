@@ -11,7 +11,7 @@ const MOOD_EMOJIS = ['✨', '😋', '☕', '📸', '🌿', '🏖️', '🌆', '�
 
 export default function RecordDashboard() {
   const router = useRouter();
-  const { cover, moments, addMoment, updateMoment, deleteMoment } = useTravelContext();
+  const { cover, moments, addMoment, updateMoment, deleteMoment, demoAlbums, loadDemoAlbum } = useTravelContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -144,7 +144,34 @@ export default function RecordDashboard() {
       </header>
 
       {/* Timeline List */}
-      <div className="flex-1 overflow-y-auto px-5 py-6 pb-24 space-y-8 no-scrollbar">
+      <div className="flex-1 overflow-y-auto px-5 py-6 pb-24 space-y-6 no-scrollbar">
+        {/* Quick Demo Selector */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2.5 shadow-sm border border-gray-100 flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1.5 shrink-0 pl-1">
+            <span className="text-xs">✨</span>
+            <span className="text-xs font-bold text-gray-700">데모 코스:</span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            {demoAlbums.map(demo => {
+              const isCurrent = cover.title === demo.cover.title;
+              return (
+                <button
+                  key={demo.id}
+                  onClick={() => loadDemoAlbum(demo.id)}
+                  className={`px-2.5 py-1 text-xs font-medium rounded-full transition-all cursor-pointer ${
+                    isCurrent
+                      ? 'bg-[var(--seed-orange)] text-white shadow-xs font-semibold'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                  title={demo.description}
+                >
+                  {demo.badge.includes('장기') ? '✈️ ' : '🏝️ '}{demo.name.replace(' 여행', '').replace(' 힐링 휴양', '').replace(' 낭만 배낭', '')}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {moments.length === 0 ? (
           <div className="text-center text-gray-400 mt-24 px-4">
             <div className="text-4xl mb-3">📖</div>

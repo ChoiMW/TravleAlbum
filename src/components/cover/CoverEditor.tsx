@@ -10,7 +10,7 @@ import { compressImage } from '@/utils/imageCompressor';
 
 export default function CoverEditor() {
   const router = useRouter();
-  const { cover, template, setCover, setTemplate, resetToDefault } = useTravelContext();
+  const { cover, template, setCover, setTemplate, resetToDefault, demoAlbums, loadDemoAlbum } = useTravelContext();
   const [isEditing, setIsEditing] = useState(false);
   const [isSheetCollapsed, setIsSheetCollapsed] = useState(false);
 
@@ -97,7 +97,53 @@ export default function CoverEditor() {
 
 
         {!isEditing ? (
-          <div className="space-y-5 pb-2">
+          <div className="space-y-4 pb-2">
+            {/* Demo Travel Albums Selector */}
+            <div className="bg-gradient-to-r from-orange-50/80 via-amber-50/60 to-rose-50/80 border border-orange-200/70 rounded-2xl p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm">✨</span>
+                  <h4 className="text-xs font-bold text-gray-900">데모 여행 데이터 불러오기</h4>
+                </div>
+                <span className="text-[10px] font-semibold text-orange-700 bg-orange-100/80 px-2 py-0.5 rounded-full">
+                  실제 사진/글 포함
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {demoAlbums.map(demo => {
+                  const isCurrent = cover.title === demo.cover.title;
+                  return (
+                    <button
+                      key={demo.id}
+                      onClick={() => loadDemoAlbum(demo.id)}
+                      className={`flex flex-col items-start p-2 rounded-xl transition-all text-left cursor-pointer border ${
+                        isCurrent
+                          ? 'bg-white border-[var(--seed-orange)] shadow-sm ring-1 ring-[var(--seed-orange)]'
+                          : 'bg-white/80 border-orange-200/60 hover:bg-white hover:border-orange-300'
+                      }`}
+                      title={demo.description}
+                    >
+                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded mb-1 ${
+                        demo.id === 'jeju' 
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' 
+                          : demo.id === 'europe' 
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200/60' 
+                            : 'bg-amber-50 text-amber-700 border border-amber-200/60'
+                      }`}>
+                        {demo.badge}
+                      </span>
+                      <span className="text-xs font-bold text-gray-900 line-clamp-1 w-full">
+                        {demo.name}
+                      </span>
+                      <span className="text-[10px] text-gray-500 line-clamp-1 w-full mt-0.5">
+                        {demo.template === 'minimal' ? '미니멀' : demo.template === 'magazine' ? '매거진' : '다이어리'}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div>
               <div className="flex justify-between items-center mb-2 px-1">
                 <h3 className="text-sm font-bold text-gray-900">표지 디자인 선택</h3>
